@@ -29,3 +29,5 @@ Datasets required are:
 
 - [DOE Phys Ed report](https://infohub.nyced.org/reports-and-policies/government/intergovernmental-affairs/physical-education-reporting)
 - [CSD shapefiles](https://data.cityofnewyork.us/Education/School-Districts/r8nu-ymqj)
+
+All code expects datasets to be in `data/original_data` folder.

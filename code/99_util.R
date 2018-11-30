@@ -1,5 +1,8 @@
+# A function to make all the demographic maps
+
 make_dem_map <- function(demo, pal) {
   
+  # Find overall district wide percentages
   district_percs <- by_district_long %>% 
     filter(dem == demo, measure %in% c("num_less", "num_required")) %>% 
     spread(measure, value) %>% 
@@ -9,7 +12,7 @@ make_dem_map <- function(demo, pal) {
     mutate(perc = num_less/(num_less + num_required)) %>% 
     select(district, dem_value, perc)
   
-  
+  # Make dataframe to plot
   dat <- by_district_long %>% 
     filter(dem == demo, measure == "perc_less") %>%
     as.data.frame() %>%
@@ -36,6 +39,7 @@ make_dem_map <- function(demo, pal) {
   #                     domain = range(dat$mean),
   #                     reverse = TRUE)
   
+  # Clean up labels
   if(all(dat$dem_value %in% c("TRUE", "FALSE"))) {
     dat <- dat %>% 
       mutate(dem_value = case_when(
@@ -44,6 +48,7 @@ make_dem_map <- function(demo, pal) {
       ))
   }
   
+  # Make map
   map <- dat %>%
     leaflet() %>% 
     addProviderTiles("CartoDB.Positron") %>% 
@@ -56,6 +61,7 @@ make_dem_map <- function(demo, pal) {
               title = "Average percentage<br>of students") %>% 
     identity()
   
+  # Add layer controls
   if (length(unique(dat$dem_value)) > 1){
     map <- map %>%
       addLayersControl(baseGroups = ~unique(dem_value), position = "topright", options = layersControlOptions(collapsed = FALSE))

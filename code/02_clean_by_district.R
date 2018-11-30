@@ -1,3 +1,4 @@
+# Rename columns and clean grade_level
 by_district <- by_district_raw %>% 
   select(-category, category = category_1,
          num_required = number_of_students_who_are_receiving_the_required_amount_of_physical_education_instruction,
@@ -13,6 +14,7 @@ by_district <- by_district_raw %>%
     ))
   )
 
+# Find number of students *without* IEP
 temp_iep <- by_district %>% 
   filter(category %in% c("All Students", "IEP")) %>% 
   select(-starts_with("average"), -starts_with("perc"), -ends_with("adaptive")) 
@@ -33,6 +35,8 @@ by_district_non_iep <- temp_iep %>%
          perc_required = num_required/(num_less + num_required)) %>% 
   bind_rows(by_district)
 
+
+# Find number of *non-ELL* students
 temp_ell <- by_district %>% 
   filter(category %in% c("All Students", "ELL")) %>% 
   select(-starts_with("average"), -starts_with("perc"), -ends_with("adaptive")) 
@@ -53,6 +57,7 @@ by_district_non_ell <- temp_ell %>%
          perc_required = num_required/(num_less + num_required)) %>% 
   bind_rows(by_district_non_iep)
 
+# Create long data frame
 by_district_long <- by_district_non_ell %>% 
   gather("measure", "value", -(district:category)) %>% 
   mutate(category = case_when(

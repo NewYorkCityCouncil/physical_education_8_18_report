@@ -1,25 +1,5 @@
-# tmp <- by_district_long %>% 
-#   filter(measure == "perc_less") %>%
-#   as.data.frame() %>%
-#   group_by(district, dem_value, dem) %>% 
-#   nest() %>% 
-#   mutate(mean = map_dbl(data, ~mean(.x$value)),
-#          plots = pmap(list(data, district, mean), ~ggplot(..1, aes(grade_level, value)) + 
-#                         geom_col(width = .9) + 
-#                         scale_y_continuous(labels = scales::percent, limits = c(0,1)) +
-#                         scale_x_continuous(breaks = 0:12, limits = c(-.5, 12.5), labels = c("K", 1:12)) +
-#                         labs(title = paste("District", ..2),
-#                              subtitle = paste0("Mean less than required phys ed: ", round(..3*100), "%"),
-#                              x = "Grade",
-#                              y = "Percent not getting required phys ed") + 
-#                         theme_bw() + 
-#                         theme(axis.text.x = element_text(color = ifelse(0:12 %in% ..1$grade_level, "black", "red"))))) %>% 
-#   # left_join(districts, by = c("district" = "SchoolDist")) %>% 
-#   # st_sf() %>% 
-#   # st_transform(crs = "+proj=longlat +datum=WGS84")
-#   identity()
 
-
+# Find district percentages
 district_percs <- by_district_long %>% 
   filter(measure %in% c("num_less", "num_required")) %>% 
   spread(measure, value) %>% 
@@ -50,6 +30,7 @@ tmp <- by_district_long %>%
                               plot.caption = element_text(color = "red")))) %>% 
   select(-data, - plots)
 
+# Find top n-th school in each dem 
 ranks <- function(x) {
   tmp %>% 
   ungroup() %>% 
@@ -67,6 +48,7 @@ ranks_df %>%
   select(rank = n, dem, dem_value, district, perc) %>% 
   knitr::kable()
 
+# Find bottom n-th schools in each dem
 ranks2 <- function(x) {
   tmp %>% 
     ungroup() %>% 

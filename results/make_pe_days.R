@@ -1,4 +1,4 @@
-# load data and packages
+# Load data and packages
 library(sf)
 files <- list.files("code", pattern = "[0-9]{2}_.*\\.R$", full.names = TRUE)
 sapply(files, source)
